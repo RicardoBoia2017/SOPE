@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void functionA ()
+{
+printf ("Executing exit handler 1\n\n");
+}
+
+void functionB ()
+{
+printf ("Executing exit handler 2\n\n");
+}
+
+int main (int argc, char* argv[])
+{
+atexit(functionA);
+
+atexit(functionB);
+
+printf ("Main done!\n\n");
+
+return 0;
+}
+
