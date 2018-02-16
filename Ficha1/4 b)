@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char* argv[])
+{
+  int counter = atoi (argv [1]);
+
+  while (counter > 0)
+  {
+  int i = 2;
+
+  printf("Hello ");
+  for (i; i < argc; i++)
+  {
+	  printf("%s ", argv [i]);
+  }
+
+  printf ("!\n");
+
+  counter --;
+  }
+
+  return 0;
+}
+
