@@ -1,0 +1,31 @@
+#include <termios.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+
+#define BUFFER_SIZE 512
+int main(void)
+{
+	char name[BUFFER_SIZE], grade [BUFFER_SIZE];
+	int f;
+
+	write(STDOUT_FILENO, "\nName? ", 7);
+	gets (name);
+
+	write(STDOUT_FILENO, "Grade? ", 8);
+	gets (grade);
+
+	f = open("grades.txt", O_WRONLY | O_APPEND);
+
+	printf ("%s %s\n", name, grade);
+
+	write (f,name, strlen(name));
+	write (f, " ", 1);
+	write (f, grade, strlen (grade));
+	write (f, "\n" ,1);
+
+	close (f);
+
+	return 0;
+}
