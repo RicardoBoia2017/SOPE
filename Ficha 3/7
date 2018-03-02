@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+   char prog[20];
+   sprintf(prog,"%s.c",argv[1]);
+
+   if (execlp("gcc","gcc",prog,"-Wall","-o",argv[1],NULL) == -1)
+   {
+	   printf ("ERROR\n");
+	   return 1;
+   }
+
+   printf("Compiled with success");
+   exit(0);
+}
