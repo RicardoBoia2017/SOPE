@@ -1,0 +1,24 @@
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdio.h>
+
+int main(void) {
+
+	int status;
+	pid_t pid = fork();
+
+	if (pid > 0) { //pai
+//		printf ("Hello ");
+		wait(&status); //espera que os filhos acabem
+		write(STDOUT_FILENO, "World\n\n", 7);
+	}
+
+	else if (pid == 0)//filho
+	{
+//		printf ("World\n");
+		write(STDOUT_FILENO, "Hello ", 6);
+	}
+
+
+	return 0;
+}
