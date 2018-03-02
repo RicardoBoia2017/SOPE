@@ -1,0 +1,19 @@
+#include <unistd.h>
+#include <stdio.h>
+
+int main(void) {
+
+	if (fork() == 0) { //filho
+//		printf ("2\n");
+		write(STDOUT_FILENO, "World\n", 6);
+	}
+
+	else //pai
+	{
+//		printf ("4\n");
+		write(STDOUT_FILENO, "Hello", 5);
+	}
+
+
+	return 0;
+}
