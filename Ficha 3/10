@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+
+int main(int argc, char *argv[], char *envp[])
+{
+   if (argc != 2 && argc != 3) {
+     printf("usage: %s dirname\n",argv[0]);
+     exit(1);
+   }
+
+   pid_t pid = fork();
+
+   if (pid > 0)
+   {
+	 int child_return;
+     printf("My child is going to execute command  \"ls -laR %s\"\n", argv[1]);
+
+     wait(&child_return);
+
+     printf("\n\nChild Process return value: %d\n" , child_return);
+
+     if (WIFEXITED (child_return) == 1)
+     {
+    	 printf ("Child ended normally\n");
+     }
+
+     if (WIFSIGNALED (child_return) == 1)
+     {
+    	 printf ("Child was signaled\n");
+     }
+   }
+
+   else if (pid == 0)
+   {
+
+	 if (argc == 3)
+	 {
+		 int fd = open (argv[2],O_WRONLY | O_CREAT | O_EXCL,644);
+
+		 if (fd == -1)
+		 {
+			 printf ("Error opening file");
+		 }
+
+		 if (dup2 (fd, STDOUT_FILENO) == -1)
+		 {
+			 printf ("Error redirecting file standard output.");
+		 }
+	 }
+	 char* arguments [] = {"ls", "-laR", argv[1], NULL};
+     execve("/bin/ls",arguments, envp);
+     printf("Command not executed !\n");
+     exit(0);
+   }
+   exit(0);
+}
