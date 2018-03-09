@@ -18,7 +18,7 @@ int main(int argc, char *argv[], char *envp[])
    else if (pid == 0)
    {
 	 printf ("\n");
-     execlp("/bin/ls","ls" ,"-laR",argv[1],NULL);
+     execl("/bin/ls","ls" ,"-laR",argv[1],NULL);
      printf("Command not executed !\n");
      exit(0);
    }
