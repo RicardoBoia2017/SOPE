@@ -9,7 +9,6 @@ int adder = 1;
 
 void sigusr_handler(int signo) {
 
-	printf ("Entrou no handler\n");
 	if (signo == SIGUSR1)
 		adder = 1;
 	else if (signo == SIGUSR2)
@@ -20,13 +19,24 @@ int main(void) {
 	int v = 0;
 	int pid;
 
-	pid = fork();
 
-	struct sigaction action;
+
+	/*struct sigaction action;
 	action.sa_handler = sigusr_handler;
 	action.sa_flags = 0;
-	sigemptyset(& (action.sa_mask));
+	sigemptyset(& (action.sa_mask));*/
 
+	if (signal(SIGUSR1, sigusr_handler) < 0) {
+			fprintf(stderr, "Unable to install SIGUSR1 handler\n");
+			exit(1);
+	}
+
+	if (signal(SIGUSR2, sigusr_handler) < 0) {
+		fprintf(stderr, "Unable to install SIGUSR2 handler\n");
+		exit(1);
+	}
+
+	pid = fork();
 
 	srand(time(NULL));
 
@@ -37,45 +47,32 @@ int main(void) {
 
 	else if (pid == 0) //filho
 	{
-		printf ("Entrou no filho");
 
-		if (sigaction(SIGUSR1, &action, NULL) < 0) {
-			fprintf(stderr, "Unable to install SIGUSR1 handler\n");
-			exit(1);
-		}
-
-		if (sigaction(SIGUSR2, &action, NULL) < 0) {
-			fprintf(stderr, "Unable to install SIGUSR2 handler\n");
-			exit(1);
-		}
-
-		printf("Value = %d\n", v);
-		v += adder;
-		//sleep(1);
 	}
 
 	else if (pid > 0) //pai
 	{
 		int i;
-
 		for (i = 0; i < 50; i++) {
 			int tmp = rand() % 2;
 
 			if (tmp == 0)
 			{
 				kill(pid, SIGUSR1);
-				printf ("USR1\n");
 			}
 			else {
 				kill(pid, SIGUSR2);
-				printf ("USR2\n");
 			}
 			sleep(1);
 
 		}
-
 		kill(pid, SIGTERM);
 	}
+	while(1){
+		printf("Value = %d\n", v);
+		v += adder;
+		sleep(1);
+	}
 
-	exit(0);
+
 }
