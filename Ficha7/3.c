@@ -27,13 +27,6 @@ void *fill(void *nr) {
 		pos++;
 		val++;
 
-//		while (1)
-//		{
-//			if (pthread_cond_wait(&var, &mut) )
-//				break;
-//			printf ("Waiting\n");
-//		}
-
 		pthread_mutex_unlock(&mut);
 
 		*(int *) nr += 1;
@@ -51,8 +44,9 @@ void *verify(void *arg) {
 		}
 
 		if (k < pos){   // detecta valores errados
+			if(buf[k]!= k)
+				printf("ERROR: k = %d    pos = %d\n", k, pos);
 			k++;
-			printf("ERROR: k = %d    pos = %d\n", k, pos);
 			pthread_mutex_unlock(&mut);
 		}
 		else {
