@@ -9,7 +9,7 @@
 
 int npos;
 int k = 0;
-pthread_cond_t var=PTHREAD_COND_INITIALIZER;
+pthread_cond_t var= PTHREAD_COND_INITIALIZER;
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;  // mutex p/a sec.critica
 int buf[MAXELEMS], pos = 0, val = 0;                // variaveis partilhadas
 
@@ -22,11 +22,17 @@ void *fill(void *nr) {
 			pthread_mutex_unlock(&mut);
 			return NULL;
 		}
+
 		buf[pos] = val;
 		pos++;
 		val++;
 
-	    pthread_cond_wait(&var, &mut);
+//		while (1)
+//		{
+//			if (pthread_cond_wait(&var, &mut) )
+//				break;
+//			printf ("Waiting\n");
+//		}
 
 		pthread_mutex_unlock(&mut);
 
@@ -35,19 +41,26 @@ void *fill(void *nr) {
 }
 
 void *verify(void *arg) {
+	while (1) {
 
-	pthread_mutex_lock(&mut);
+		pthread_mutex_lock(&mut);
 
-	if (k < pos)   // detecta valores errados
+		if (k >= npos){
+			pthread_mutex_unlock(&mut);
+			return NULL;
+		}
+
+		if (k < pos){   // detecta valores errados
+			k++;
 			printf("ERROR: k = %d    pos = %d\n", k, pos);
+			pthread_mutex_unlock(&mut);
+		}
+		else {
+			pthread_mutex_unlock(&mut);
+		}
 
-	k++;
 
-	pthread_cond_signal(&var);
-
-	pthread_mutex_unlock(&mut);
-
-	return NULL;
+	}
 }
 
 int main(int argc, char *argv[]) {

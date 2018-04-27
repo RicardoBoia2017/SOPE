@@ -13,7 +13,7 @@ int buf[MAXELEMS], pos = 0, val = 0;                // variaveis partilhadas
 
 void *fill(void *nr) {
 	while (1) {
-//		pthread_mutex_lock(&mut);
+		pthread_mutex_lock(&mut);
 		if (pos >= npos) {
 			pthread_mutex_unlock(&mut);
 			return NULL;
@@ -21,7 +21,7 @@ void *fill(void *nr) {
 		buf[pos] = val;
 		pos++;
 		val++;
-//		pthread_mutex_unlock(&mut);
+		pthread_mutex_unlock(&mut);
 		*(int *) nr += 1;
 	}
 }
